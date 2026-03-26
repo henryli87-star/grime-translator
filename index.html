@@ -558,7 +558,8 @@
     <div class="setup-sub">
       Powered by Llama 3 Â· Free via <a href="https://console.groq.com" target="_blank">Groq</a> Â· No credit card needed
     </div>
-)   <div class="steps">
+
+    <div class="steps">
       <div class="step">
         <div class="step-n">1</div>
         <div>Go to <a href="https://console.groq.com" target="_blank" style="color:var(--blue)">console.groq.com</a> and sign up free</div>
@@ -572,7 +573,8 @@
         <div>Paste your key below and you're good</div>
       </div>
     </div>
-)   <div class="field-label">Groq API Key</div>
+
+    <div class="field-label">Groq API Key</div>
     <input type="password" id="keyInput" placeholder="gsk_â¦" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();boot()}" />
     <button class="setup-btn" onclick="boot()">Start translating â</button>
     <div class="setup-note">Key stored in memory only â never saved or shared.</div>
@@ -644,7 +646,7 @@
 <script>
 // ââ CONFIG âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL    = 'llama 3.3-70b-versatile';
+const MODEL    = 'llama-3.3-70b-versatile';
 
 const SYSTEM = `You are an expert London grime and road slang translator.
 
@@ -703,7 +705,7 @@ Return ONLY this JSON â no markdown, no extra text:
 {"light":"...","road":"...","mandem":"..."}`;
 
 // ââ STATE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-let KEY  = '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';
+let KEY  = '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';
 let mode = 'all';
 let busy = false;
 
