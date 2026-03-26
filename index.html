@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Grime Translator</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --border: #222;
+      --border2: #2a2a2a;
+      --text: #f0f0f0;
+      --muted: #555;
+      --gold: #f5c518;
+      --gold-bg: #1a1700;
+      --blue: #3b9eff;
+      --blue-bg: #071525;
+      --orange: #f5831a;
+      --orange-bg: #180d00;
+      --red: #f54f1a;
+      --red-bg: #150500;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100dvh; /* dynamic viewport height for mobile */
+    }
+
+    /* ââ SETUP SCREEN ââââââââââââââââââââââââââââââââââââââââ */
+    #setup {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .setup-inner {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .setup-logo {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .setup-title {
+      font-size: 1.6rem;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .setup-title span { color: var(--gold); }
+
+    .setup-sub {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .setup-sub a { color: var(--blue); text-decoration: none; }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.83rem;
+      color: #aaa;
+      line-height: 1.5;
+    }
+
+    .step-n {
+      background: var(--gold);
+      color: #111;
+      font-weight: 900;
+      font-size: 0.68rem;
+ 0    border-radius: 50%;
+      width: 22px; height: 22px;
+  0   display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+   0.field-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    #keyInput {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid var(--border2);
+ 0    border-radius: 12px;
+      color: var(--text);
+      font-size: 0.9rem;
+      padding: 14px 16px;
+      font-family: monospace;
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 12px;
+      -webkit-appearance: none;
+    }
+
+    #keyInput:focus { border-color: var(--gold); }
+    #keyInput::placeholder { color: #333; }
+
+    .setup-btn {
+      width: 100%;
+      background: var(--gold);
+      color: #111;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.1s;
+      font-family: inherit;
+    }
+
+    .setup-btn:active { background: #ffd740; }
+
+    .setup-note {
+      font-size: 0.68rem;
+      color: #2a2a2a;
+      text-align: center;
+    0 margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    /* ââ MAIN APP ââââââââââââââââââââââââââââââââââââââââââââ */
+    #app {
+      display: none;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+   0  flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .app-title {
+      font-size: 1.15rem;
+     0font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+
+    .app-title span { color: var(--gold); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .style-badge {
+      font-size: 0.68rem;
+   0  font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1.5px solid;
+      letter-spacing: 0.3px;
+    }
+
+    .style-badge.light  { border-color: var(--blue);   color: var(--blue);   background: var(--blue-bg); }
+    .style-badge.road   { border-color: var(--orange); color: var(--orange); background: var(--orange-bg); }
+    .style-badge.mandem { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+    .style-badge.all  0 { border-color: var(--gold);   color: var(--gold);   background: var(--gold-bg); }
+
+    .menu-btn {
+      background: none;
+      border: 1px solid var(--border2);
+      color: var(--muted);
+      font-size: 0.75rem;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      font-family: inherit;
+    }
+
+    /* Style selector sheet */
+    .style-sheet {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 50;
+      align-items: flex-end;
+      backdrop-filter: blur(4px);
+    }
+
+    .style-sheet.open {
+      display: flex;
+    }
+
+    .style-options {
+      width: 100%;
+      background: #141414;
+      border-radius: 20px 20px 0 0;
+      padding: 12px 16px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sheet-handle {
+      width: 36px;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+
+    .sheet-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    .style-opt {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border2);
+      background: var(--surface);
+      cursor: pointer;
+   0  -webkit-tap-highlight-color: transparent;
+      transition: all 0.1s;
+    }
+
+    .style-opt:active { opacity: 0.7; }
+
+    .style-opt.selected { border-color: var(--gold); background: var(--gold-bg); }
+
+    .style-opt-icon { font-size: 1.2rem; }
+
+    .style-opt-text h3 { font-size: 0.92rem; font-weight: 700; }
+    .style-opt-text p  { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+    .style-opt.selected .style-opt-text p { color: #888; }
+
+    /* Results feed */
+    #feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #feed::-webkit-scrollbar { display: none; }
+
+    /* Empty state */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .empty-icon { font-size: 2.5rem; margin-bottom: 8px; }
+ 0  .empty-title { font-size: 1rem; font-weight: 700; color: #333; }
+    .empty-sub { font-size: 0.8rem; color: #2a2a2a; line-height: 1.5; max-width: 260px; }
+
+    /* Message row */
+    .msg-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .original-label {
+      font-size: 0.68rem;
+      color: #2a2a2a;
+      padding-left: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Translation card â tap to copy */
+   0.tcard {
+      border-radius: 16px;
+      border: 1px solid;
+      padding: 14px 15px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      transition: transform 0.08s, opacity 0.08s;
+     0user-select: none;
+    }
+
+    .tcard:active { transform: scale(0.98); opacity: 0.8; }
+
+    .tcard.light  { border-color: #162230; background: var(--blue-bg); }
+    .tcard.road   { border-color: #2e1a00; background: var(--orange-bg); }
+    .tcard.mandem { border-color: #2e1000; background: var(--red-bg); }
+
+    .tcard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+     0margin-bottom: 8px;
+    }
+
+    .tcard-label {
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .tcard-label.light  { color: var(--blue); }
+    .tcard-label.road   { color: var(--orange); }
+    .tcard-label.mandem { color: var(--red); }
+
+    .tap-hint {
+      font-size: 0.62rem;
+      color: #333;
+      display: flex;
+      align-items: center;
+  0   gap: 4px;
+    }
+
+    .tcard-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Copied flash overlay */
+    .copied-flash {
+      position: absolute;
+      inset: 0;
+   À0 border-radius: 15px;
+      background: rgba(245, 197, 24, 0.12);
+      display: flex;
+      align-items: center;
+    À0justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.1s;
+    }
+
+    .copied-flash.show { opacity: 1; }
+
+    .copied-flash span {
+   À0 background: var(--gold);
+      color: #111;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Typing dots */
+    .typing-row {
+      display: flex;
+      gap: 6px;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      width: fit-content;
+    }
+0   .typing-row span {
+      width: 7px; height: 7px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+
+    .typing-row span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-row span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    .error-card {
+      background: #1a0808;
+   À0 border: 1px solid #3a1010;
+      border-radius: 14px;
+   À0 padding: 13px 15px;
+      font-size: 0.85rem;
+      color: #ff7070;
+      line-height: 1.5;
+    }
+
+    /* ââ INPUT BAR âââââââââââââââââââââââââââââââââââââââââââ */
+    .input-bar {
+      flex-shrink: 0;
+  À0  padding: 10px 12px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      display: flex;
+ À0   gap: 8px;
+      align-items: flex-end;
+    }
+
+    #txt {
+      flex: 1;
+      background: var(--surface);
+      border: 1.5px solid var(--border2);
+      border-radius: 22px;
+ 0    color: var(--text);
+      font-size: 1rem;
+      padding: 11px 16px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s;
+      resize: none;
+      line-height: 1.45;
+      max-height: 120px;
+      -webkit-appearance: none;
+    }
+
+    #txt:focus { border-color: var(--gold); }
+    #txt::placeholder { color: #333; }
+
+    #goBtn {
+      width: 46px;
+      height: 46px;
+      background: var(--gold);
+      color: #111;
+      border: none;
+ À0   border-radius: 50%;
+      font-size: 1.1rem;
+      font-weight: 900;
+      cursor: pointer;
+      flex-shrink: 0;
+ À0   display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.1s, transform 0.08s;
+  À0}
+
+    #goBtn:active { background: #ffd740; transform: scale(0.93); }
+    #goBtn:disabled { background: #222; color: #444; transform: none; }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: var(--gold);
+      color: #111;
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 8px 18px;
+      border-radius: 20px;
+      opacity: 0;
+      transition: all 0.2s;
+      pointer-events: none;
+      white-space: nowrap;
+ À0   z-index: 200;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+  À0/* Responsive â desktop gets centred narrow layout */
+  À0@media (min-width: 600px) {
+      body { align-items: center; background: #060606; }
+      #app {
+        max-width: 420px;
+        width: 100%;
+        height: 100dvh;
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+        background: var(--bg);
+      }
+      #setup { background: #060606; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ââ SETUP SCREEN ââ -->
+<div id="setup">
+  <div class="setup-inner">
+    <div class="setup-logo">ð¤</div>
+    <div class="setup-title">Grime <span>Translator</span></div>
+    <div class="setup-sub">
+      Powered by Llama 3 Â· Free via <a href="https://console.groq.com" target="_blank">Groq</a> Â· No credit card needed
+    </div>
+0   <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div>Go to <a href="https://console.groq.com" target="_blank" style="color:var(--blue)">console.groq.com</a> and sign up free</div>
+      </div>
+ À0  <div class="step">
+        <div class="step-n">2</div>
+ À0     <div>Click <strong style="color:#f0f0f0">API Keys</str0ong> in the sidebar â <strong style="color:#f0f0f0">Create API Key</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div>Paste your key below and you're good</div>
+      </div>
+    </div>
+0   <div class="field-label">Groq API Key</div>
+    <input type="password" id="keyInput" placeholder="gsk_â¦" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();boot()}" />
+    <button class="setup-btn" onclick="boot()">Start translating â</button>
+    <div class="setup-note">Key stored in memory only â never saved or shared.</div>
+  </div>
+</div>
+
+<!-- ââ MAIN APP ââ -->
+<div id="app">
+
+  <div class="app-header">
+    <div class="app-title">ð¤ Grime <span>Translator</span></div>
+    <div class="header-right">
+      <div id="styleBadge" class="style-badge all" onclick="openSheet()">All Styles â¾</div>
+      <button class="menu-btn" onclick="changeKey()">Key</button>
+    </div>
+  </div>
+
+  <!-- Style selector sheet -->
+  <div class="style-sheet" id="styleSheet" onclick="closeSheetIfBg(event)">
+    <div class="style-options">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">Translation Style</div>
+      <div class="style-opt selected" data-m="all" onclick="pickStyle('all',this)">
+        <div class="style-opt-icon">â¨</div>
+        <div class="style-opt-text">
+          <h3>All Three</h3>
+          <p>Get Light, Road and Full Mandem at once</p>
+        </div>
+      </div>
+      <div class="style-opt" data-m="light" onclick="pickStyle('light',this)">
+        <div class="style-opt-icon">ð¦</div>
+        <div class="style-opt-text">
+          <h3>Light</h3>
+          <p>A few slang words, mostly standard English</p>
+        </div>
+      </div>
+      <div class="style-opt" data-m="road" onclick="pickStyle('road',this)">
+        <div class="style-opt-icon">ð§</div>
+        <div class="style-opt-text">
+          <h3>Road</h3>
+          <p>Natural roadman speech, proper rewrites</p>
+        </div>
+      </div>
+    0 <div class="style-opt" data-m="mandem" onclick="pickStyle('mandem',this)">
+        <div class="style-opt-icon">ð¥</div>
+        <div class="style-opt-text">
+          <h3>Full Mandem</h3>
+          <p>Maximum slang â grime MC level</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="feed">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">ð¤</div>
+      <div class="empty-title">Ready to translate</div>
+      <div class="empty-sub">Type anything in English below. Tap a result to copy it straight into your chat.</div>
+    </div>
+  </div>
+
+  <div class="input-bar">
+    <textarea id="txt" rows="1" placeholder="Type in Englishâ¦" oninput="grow(this)" onkeydown="handleKey(event)"></textarea>
+    <button id="goBtn" onclick="go()">â¤</button>
+  </div>
+</div>
+
+<div id="toast">Copied!</div>
+
+<script>
+// ââ CONFIG âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL    = 'llama-3.3-70b-versatile';
+
+const SYSTEM = `You are an expert London grime and road slang translator.
+
+Your ONLY job is to take standard English input and return a JSON object with three grime translations. You NEVER explain, comment, or add text outside the JSON.
+
+CRITICAL: You do NOT swap individual words. You FULLY REWRITE the sentence the way a real London roadman or grime MC would naturally say it. The grammar, rhythm, pronoun usage and sentence structure all change.
+
+=== KEY LINGUISTIC RULES ===
+
+PRONOUN SHIFTS:
+- "I" â "man" in third person (e.g. "I'm going" â "man's moving", "I have" â "man's got")
+- "my" â "man's" (e.g. "my house" â "man's yard")
+- "we" â "mandem"
+
+VERB RESTRUCTURING:
+- "I'm going to [place]" â "man's linking [place]" or "man's rolling to [place]"
+- "I want to" â "tryna"
+- "chilling / relaxing" â "cotching"
+- "working hard" â "on the grind"
+- "showing off" â "flexing"
+- "looking at" â "preeing"
+- "meet up" â "link"
+
+INTENSIFIERS:
+- "very / really / so" â "bare" or "proper"
+- "a lot of" â "bare"
+
+VOCABULARY:
+- home/house/flat â yard
+- area/neighbourhood â ends
+- friend/mate â bruv, blud, fam (vary naturally)
+- group of mates â mandem
+- girl â gyal | group of girls â galdem
+- good/attractive â peng, buff, cold, fire, dench
+- bad/unfortunate â peak, dead
+- car â whip | money â P's, bread
+- police â feds (road) or boydem (mandem)
+- party â rave | music/beat â riddim | rap lyrics â bars
+
+NATURAL ENDINGS (max 1 per sentence):
+"innit", "dun know", "blud", "fam", "on my life", "safe"
+
+=== THE THREE LEVELS ===
+
+LIGHT: Keep structure mostly intact, sprinkle 2-3 slang words naturally.
+Example: "I'm going home to relax" â "I'm heading back to the yard to chill out bruv"
+
+ROAD: Rephrase ~60% using grime grammar, shift pronouns and verbs.
+Example: "I'm going home to relax" â "Man's linking the yard, tryna cotch for a bit fam"
+
+MANDEM: Full reconstruction. Heavy third-person, punchy compressed sentences, multiple slang terms.
+Example: "I'm going home to relax" â "Ngl man's dead on his feet, tryna link the yard and cotch hard, allow everything else dun know"
+
+=== OUTPUT FORMAT ===
+Return ONLY this JSON â no markdown, no extra text:
+{"light":"...","road":"...","mandem":"..."}`;
+
+// ââ STATE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+let KEY  = '';
+let mode = 'all';
+let busy = false;
+
+// ââ SETUP ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function boot() {
+  const k = document.getElementById('keyInput').value.trim();
+  if (!k.startsWith('gsk_')) {
+    alert('Please enter a valid Groq API key â it starts with gsk_');
+    return;
+  }
+  KEY = k;
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('app').style.display   = 'flex';
+  document.getElementById('txt').focus();
+}
+
+function changeKey() {
+  document.getElementById('keyInput').value = '';
+  document.getElementById('setup').style.display = 'flex';
+  document.getElementById('app').style.display   = 'none';
+}
+
+// ââ STYLE SHEET ââââââââââââââââââââââââââââââââââââââââââââââââââ
+function openSheet()  { document.getElementById('styleSheet').classList.add('open'); }
+function closeSheet() { document.getElementById('styleSheet').classList.remove('open'); }
+
+function closeSheetIfBg(e) {
+  if (e.target === document.getElementById('styleSheet')) closeSheet();
+}
+
+const STYLE_META = {
+  all:    { label: 'All Styles â¾', cls: 'all'    },
+  light:  { label: 'ð¦ Light â¾',  cls: 'light'  },
+  road:   { label: 'ð§ Road â¾',   cls: 'road'   },
+  mandem: { label: 'ð¥ Mandem â¾', cls: 'mandem' },
+};
+
+function pickStyle(m, el) {
+  mode = m;
+  document.querySelectorAll('.style-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  const badge = document.getElementById('styleBadge');
+  badge.textContent = STYLE_META[m].label;
+  badge.className   = `style-badge ${STYLE_META[m].cls}`;
+  closeSheet();
+}
+
+// ââ INPUT ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function grow(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); go(); }
+}
+
+// ââ TRANSLATE ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+async function go() {
+  if (busy) return;
+  const input = document.getElementById('txt').value.trim();
+  if (!input) return;
+
+  document.getElementById('txt').value = '';
+  document.getElementById('txt').style.height = 'auto';
+
+  // Hide empty state
+  const empty = document.getElementById('emptyState');
+  if (empty) empty.remove();
+
+  const feed = document.getElementById('feed');
+
+  // Typing indicator
+  const typingRow = document.createElement('div');
+  typingRow.className = 'typing-row';
+  typingRow.innerHTML = '<span></span><span></span><span></span>';
+  feed.appendChild(typingRow);
+  scrollFeed();
+
+  busy = true;
+  document.getElementById('goBtn').disabled = true;
+
+  const styles  = mode === 'all' ? ['light', 'road', 'mandem'] : [mode];
+  const userMsg = mode === 'all'
+    ? `Translate into all three styles:\n"${input}"`
+    : `Translate into the ${mode} style only. Return JSON with just the "${mode}" key:\n"${input}"`;
+
+  try {
+    const res = await fetch(GROQ_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${KEY}`
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [
+          { role: 'system', content: SYSTEM },
+          { role: 'user',   content: userMsg }
+        ],
+        max_tokens: 400,
+        temperature: 0.75
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `Error ${res.status}`);
+    }
+
+    const data   = await res.json();
+    const raw    = data.choices?.[0]?.message?.content || '';
+    const clean  = raw.trim().replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    const parsed = JSON.parse(clean);
+
+    typingRow.remove();
+
+    // Build result row
+    const LABELS = { light: 'ð¦ Light', road: 'ð§ Road', mandem: 'ð¥ Full Mandem' };
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+
+    // Show original faintly
+    const orig = document.createElement('div');
+    orig.className = 'original-label';
+    orig.textContent = input;
+    row.appendChild(orig);
+
+    for (const s of styles) {
+      const text = parsed[s];
+      if (!text) continue;
+
+      const card  = document.createElement('div');
+      card.className = `tcard ${s}`;
+
+      card.innerHTML = `
+        <div class="tcard-header">
+          <div class="tcard-label ${s}">${LABELS[s]}</div>
+          <div class="tap-hint">tap to copy</div>
+        </div>
+        <div class="tcard-text">${text}</div>
+        <div class="copied-flash"><span>Copied!</span></div>`;
+
+      card.addEventListener('click', () => copyCard(card, text));
+      row.appendChild(card);
+    }
+
+    feed.appendChild(row);
+
+  } catch (err) {
+    typingRow.remove();
+    const e = document.createElement('div');
+    e.className = 'error-card';
+    e.textContent = `Error: ${err.message}`;
+    feed.appendChild(e);
+  }
+
+  busy = false;
+  document.getElementById('goBtn').disabled = false;
+  scrollFeed();
+}
+
+// ââ COPY âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function copyCard(card, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const flash = card.querySelector('.copied-flash');
+    flash.classList.add('show');
+    setTimeout(() => flash.classList.remove('show'), 700);
+    showToast();
+  });
+}
+
+let toastTimer;
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+}
+
+function scrollFeed() {
+  const feed = document.getElementById('feed');
+  setTimeout(() => feed.scrollTop = feed.scrollHeight, 60);
+}
+</script>
+</body>
+</html>
