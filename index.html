@@ -48,7 +48,7 @@
     #setup {
       position: fixed; inset: 0;
       background: var(--bg);
-      display: flex;
+      display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -116,14 +116,14 @@
       color: #111;
       font-weight: 900;
       font-size: 0.68rem;
- 0    border-radius: 50%;
+      border-radius: 50%;
       width: 22px; height: 22px;
-  0   display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
       margin-top: 1px;
     }
 
-   0.field-label {
+    .field-label {
       font-size: 0.72rem;
       font-weight: 700;
       color: var(--muted);
@@ -136,7 +136,7 @@
       width: 100%;
       background: var(--surface);
       border: 1.5px solid var(--border2);
- 0    border-radius: 12px;
+      border-radius: 12px;
       color: var(--text);
       font-size: 0.9rem;
       padding: 14px 16px;
@@ -171,13 +171,13 @@
       font-size: 0.68rem;
       color: #2a2a2a;
       text-align: center;
-    0 margin-top: 10px;
+      margin-top: 10px;
       line-height: 1.5;
     }
 
     /* ââ MAIN APP ââââââââââââââââââââââââââââââââââââââââââââ */
     #app {
-      display: none;
+      display: flex;
       flex-direction: column;
       height: 100dvh;
       overflow: hidden;
@@ -189,13 +189,13 @@
       align-items: center;
       justify-content: space-between;
       padding: 14px 16px 10px;
-   0  flex-shrink: 0;
+      flex-shrink: 0;
       border-bottom: 1px solid var(--border);
     }
 
     .app-title {
       font-size: 1.15rem;
-     0font-weight: 900;
+      font-weight: 900;
       letter-spacing: -0.3px;
     }
 
@@ -209,7 +209,7 @@
 
     .style-badge {
       font-size: 0.68rem;
-   0  font-weight: 700;
+      font-weight: 700;
       padding: 4px 10px;
       border-radius: 20px;
       border: 1.5px solid;
@@ -219,7 +219,7 @@
     .style-badge.light  { border-color: var(--blue);   color: var(--blue);   background: var(--blue-bg); }
     .style-badge.road   { border-color: var(--orange); color: var(--orange); background: var(--orange-bg); }
     .style-badge.mandem { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
-    .style-badge.all  0 { border-color: var(--gold);   color: var(--gold);   background: var(--gold-bg); }
+    .style-badge.all    { border-color: var(--gold);   color: var(--gold);   background: var(--gold-bg); }
 
     .menu-btn {
       background: none;
@@ -284,7 +284,7 @@
       border: 1.5px solid var(--border2);
       background: var(--surface);
       cursor: pointer;
-   0  -webkit-tap-highlight-color: transparent;
+      -webkit-tap-highlight-color: transparent;
       transition: all 0.1s;
     }
 
@@ -325,7 +325,7 @@
     }
 
     .empty-icon { font-size: 2.5rem; margin-bottom: 8px; }
- 0  .empty-title { font-size: 1rem; font-weight: 700; color: #333; }
+    .empty-title { font-size: 1rem; font-weight: 700; color: #333; }
     .empty-sub { font-size: 0.8rem; color: #2a2a2a; line-height: 1.5; max-width: 260px; }
 
     /* Message row */
@@ -344,7 +344,7 @@
     }
 
     /* Translation card â tap to copy */
-   0.tcard {
+    .tcard {
       border-radius: 16px;
       border: 1px solid;
       padding: 14px 15px;
@@ -352,7 +352,7 @@
       -webkit-tap-highlight-color: transparent;
       position: relative;
       transition: transform 0.08s, opacity 0.08s;
-     0user-select: none;
+      user-select: none;
     }
 
     .tcard:active { transform: scale(0.98); opacity: 0.8; }
@@ -365,7 +365,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-     0margin-bottom: 8px;
+      margin-bottom: 8px;
     }
 
     .tcard-label {
@@ -384,7 +384,7 @@
       color: #333;
       display: flex;
       align-items: center;
-  0   gap: 4px;
+      gap: 4px;
     }
 
     .tcard-text {
@@ -398,11 +398,11 @@
     .copied-flash {
       position: absolute;
       inset: 0;
-   À0 border-radius: 15px;
+      border-radius: 15px;
       background: rgba(245, 197, 24, 0.12);
       display: flex;
       align-items: center;
-    À0justify-content: center;
+      justify-content: center;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.1s;
@@ -411,7 +411,7 @@
     .copied-flash.show { opacity: 1; }
 
     .copied-flash span {
-   À0 background: var(--gold);
+      background: var(--gold);
       color: #111;
       font-size: 0.8rem;
       font-weight: 800;
@@ -430,7 +430,8 @@
       border-radius: 14px;
       width: fit-content;
     }
-0   .typing-row span {
+
+    .typing-row span {
       width: 7px; height: 7px;
       background: var(--muted);
       border-radius: 50%;
@@ -447,9 +448,9 @@
 
     .error-card {
       background: #1a0808;
-   À0 border: 1px solid #3a1010;
+      border: 1px solid #3a1010;
       border-radius: 14px;
-   À0 padding: 13px 15px;
+      padding: 13px 15px;
       font-size: 0.85rem;
       color: #ff7070;
       line-height: 1.5;
@@ -458,12 +459,12 @@
     /* ââ INPUT BAR âââââââââââââââââââââââââââââââââââââââââââ */
     .input-bar {
       flex-shrink: 0;
-  À0  padding: 10px 12px;
+      padding: 10px 12px;
       padding-bottom: max(10px, env(safe-area-inset-bottom));
       border-top: 1px solid var(--border);
       background: var(--bg);
       display: flex;
- À0   gap: 8px;
+      gap: 8px;
       align-items: flex-end;
     }
 
@@ -472,7 +473,7 @@
       background: var(--surface);
       border: 1.5px solid var(--border2);
       border-radius: 22px;
- 0    color: var(--text);
+      color: var(--text);
       font-size: 1rem;
       padding: 11px 16px;
       outline: none;
@@ -493,17 +494,17 @@
       background: var(--gold);
       color: #111;
       border: none;
- À0   border-radius: 50%;
+      border-radius: 50%;
       font-size: 1.1rem;
       font-weight: 900;
       cursor: pointer;
       flex-shrink: 0;
- À0   display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       -webkit-tap-highlight-color: transparent;
       transition: background 0.1s, transform 0.08s;
-  À0}
+    }
 
     #goBtn:active { background: #ffd740; transform: scale(0.93); }
     #goBtn:disabled { background: #222; color: #444; transform: none; }
@@ -524,7 +525,7 @@
       transition: all 0.2s;
       pointer-events: none;
       white-space: nowrap;
- À0   z-index: 200;
+      z-index: 200;
     }
 
     #toast.show {
@@ -532,8 +533,8 @@
       transform: translateX(-50%) translateY(0);
     }
 
-  À0/* Responsive â desktop gets centred narrow layout */
-  À0@media (min-width: 600px) {
+    /* Responsive â desktop gets centred narrow layout */
+    @media (min-width: 600px) {
       body { align-items: center; background: #060606; }
       #app {
         max-width: 420px;
@@ -557,21 +558,21 @@
     <div class="setup-sub">
       Powered by Llama 3 Â· Free via <a href="https://console.groq.com" target="_blank">Groq</a> Â· No credit card needed
     </div>
-0   <div class="steps">
+)   <div class="steps">
       <div class="step">
         <div class="step-n">1</div>
         <div>Go to <a href="https://console.groq.com" target="_blank" style="color:var(--blue)">console.groq.com</a> and sign up free</div>
       </div>
- À0  <div class="step">
+      <div class="step">
         <div class="step-n">2</div>
- À0     <div>Click <strong style="color:#f0f0f0">API Keys</str0ong> in the sidebar â <strong style="color:#f0f0f0">Create API Key</strong></div>
+        <div>Click <strong style="color:#f0f0f0">API Keys</strong> in the sidebar â <strong style="color:#f0f0f0">Create API Key</strong></div>
       </div>
       <div class="step">
         <div class="step-n">3</div>
         <div>Paste your key below and you're good</div>
       </div>
     </div>
-0   <div class="field-label">Groq API Key</div>
+)   <div class="field-label">Groq API Key</div>
     <input type="password" id="keyInput" placeholder="gsk_â¦" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();boot()}" />
     <button class="setup-btn" onclick="boot()">Start translating â</button>
     <div class="setup-note">Key stored in memory only â never saved or shared.</div>
@@ -585,7 +586,6 @@
     <div class="app-title">ð¤ Grime <span>Translator</span></div>
     <div class="header-right">
       <div id="styleBadge" class="style-badge all" onclick="openSheet()">All Styles â¾</div>
-      <button class="menu-btn" onclick="changeKey()">Key</button>
     </div>
   </div>
 
@@ -615,7 +615,7 @@
           <p>Natural roadman speech, proper rewrites</p>
         </div>
       </div>
-    0 <div class="style-opt" data-m="mandem" onclick="pickStyle('mandem',this)">
+      <div class="style-opt" data-m="mandem" onclick="pickStyle('mandem',this)">
         <div class="style-opt-icon">ð¥</div>
         <div class="style-opt-text">
           <h3>Full Mandem</h3>
@@ -644,7 +644,7 @@
 <script>
 // ââ CONFIG âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL    = 'llama-3.3-70b-versatile';
+const MODEL    = 'llama 3.3-70b-versatile';
 
 const SYSTEM = `You are an expert London grime and road slang translator.
 
@@ -703,7 +703,7 @@ Return ONLY this JSON â no markdown, no extra text:
 {"light":"...","road":"...","mandem":"..."}`;
 
 // ââ STATE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-let KEY  = '';
+let KEY  = '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';
 let mode = 'all';
 let busy = false;
 
