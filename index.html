@@ -48,7 +48,7 @@
     #setup {
       position: fixed; inset: 0;
       background: var(--bg);
-      display: none;
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -177,7 +177,7 @@
 
     /* ââ MAIN APP ââââââââââââââââââââââââââââââââââââââââââââ */
     #app {
-      display: flex;
+      display: none;
       flex-direction: column;
       height: 100dvh;
       overflow: hidden;
@@ -705,7 +705,7 @@ Return ONLY this JSON â no markdown, no extra text:
 {"light":"...","road":"...","mandem":"..."}`;
 
 // ââ STATE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-let KEY  = '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';
+let KEY  = '';
 let mode = 'all';
 let busy = false;
 
