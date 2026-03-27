@@ -48,7 +48,7 @@
     #setup {
       position: fixed; inset: 0;
       background: var(--bg);
-      display: flex;
+      display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -177,7 +177,7 @@
 
     /* ââ MAIN APP ââââââââââââââââââââââââââââââââââââââââââââ */
     #app {
-      display: none;
+      display: flex;
       flex-direction: column;
       height: 100dvh;
       overflow: hidden;
@@ -645,7 +645,7 @@
 
 <script>
 // ââ CONFIG âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_URL = 'https://grime-proxy.henryli-87.workers.dev';
 const MODEL    = 'llama-3.3-70b-versatile';
 
 const SYSTEM = `You are an expert London grime and road slang translator.
@@ -798,7 +798,6 @@ async function go() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${KEY}`
       },
       body: JSON.stringify({
         model: MODEL,
